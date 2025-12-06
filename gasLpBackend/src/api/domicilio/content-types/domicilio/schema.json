@@ -1,0 +1,51 @@
+{
+  "kind": "collectionType",
+  "collectionName": "domicilios",
+  "info": {
+    "singularName": "domicilio",
+    "pluralName": "domicilios",
+    "displayName": "domicilio"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "calle": {
+      "type": "string",
+      "required": true
+    },
+    "numero": {
+      "type": "string",
+      "required": true
+    },
+    "colonia": {
+      "type": "string",
+      "required": true
+    },
+    "referencia": {
+      "type": "text",
+      "required": false
+    },
+    "estado": {
+      "type": "boolean",
+      "default": true
+    },
+    "servicios": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::servicio.servicio",
+      "mappedBy": "domicilio"
+    },
+    "cliente": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::cliente.cliente",
+      "inversedBy": "domicilios"
+    },
+    "cp": {
+      "type": "biginteger",
+      "required": true
+    }
+  }
+}
