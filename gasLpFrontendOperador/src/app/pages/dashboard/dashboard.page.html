@@ -1,0 +1,83 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Dashboard</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="logOut()">
+        <ion-icon slot="start" name="enter-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <!-- FILTROS -->
+  <ion-segment [(ngModel)]="filtroEstado" (ionChange)="aplicarFiltros()">
+    <ion-segment-button value="">
+      <ion-icon name="list-outline"></ion-icon>
+      Todos
+    </ion-segment-button>
+
+    <ion-segment-button
+      *ngFor="let e of estadosFiltrados"
+      [value]="e.tipo?.toLowerCase()"
+    >
+      <ion-icon [name]="getIconEstado(e.tipo || e.nombre)"></ion-icon>
+    </ion-segment-button>
+  </ion-segment>
+
+  <!-- SERVICIOS -->
+  <ion-list>
+    <ion-card
+      *ngFor="let s of serviciosFiltrados"
+      [style.background]="getColorEstado(s)"
+    >
+      <ion-card-header>
+        <ion-card-title>
+          Estado: {{ s.estado_servicio?.tipo | titlecase }}
+        </ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <p><strong>Cliente:</strong> {{ s.clienteNombre }}</p>
+        <p><strong>Dirección:</strong> {{ s.direccion }}</p>
+        <p><strong>Teléfono:</strong> {{ s.clienteTelefono }}</p>
+
+        <p><strong>Fecha creación:</strong> {{ s.createdAt | date:'short' }}</p>
+
+        <p *ngIf="s.fecha_programado">
+          <strong>Fecha programada:</strong> {{ s.fecha_programado |
+          date:'short' }}
+        </p>
+
+        <p *ngIf="s.fecha_cancelado">
+          <strong>Fecha cancelado:</strong> {{ s.fecha_cancelado | date:'short'
+          }}
+        </p>
+
+        <p *ngIf="s.fecha_surtido">
+          <strong>Fecha surtido:</strong> {{ s.fecha_surtido | date:'short' }}
+        </p>
+
+        <p *ngIf="s.nota"><strong>Nota:</strong> {{ s.nota }}</p>
+
+        <p *ngIf="s.monto_pagado">
+          <strong>Monto pagado:</strong> ${{ s.monto_pagado }}
+        </p>
+
+        <p *ngIf="s.observacion">
+          <strong>Observaciones:</strong> {{ s.observacion }}
+        </p>
+
+        <ion-button
+          color="success"
+          size="small"
+          (click)="marcarComoSurtido(s)"
+          *ngIf="s.estado_servicio?.tipo?.toLowerCase() !== 'cancelado'"
+        >
+          <ion-icon name="checkmark-circle-outline"></ion-icon>
+          Surtido
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+</ion-content>

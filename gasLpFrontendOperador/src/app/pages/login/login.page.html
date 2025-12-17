@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Login Operador</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="login-background">
+  <ion-card class="login-card">
+    <ion-card-header>
+      <ion-card-title>Iniciar Sesión</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-item lines="full">
+        <ion-label position="floating">Usuario o Correo</ion-label>
+        <ion-input [(ngModel)]="identifier" type="text"></ion-input>
+      </ion-item>
+
+      <ion-item lines="full">
+        <ion-label position="floating">Contraseña</ion-label>
+        <ion-input [(ngModel)]="password" type="password"></ion-input>
+      </ion-item>
+
+      <ion-button expand="block" class="login-btn" (click)="login()"
+        >Entrar</ion-button
+      >
+      <ion-button
+        expand="block"
+        class="google-btn"
+        href="http://localhost:1337/api/connect/google"
+      >
+        <ion-icon slot="start" name="logo-google"></ion-icon>
+        Iniciar con Google
+      </ion-button>
+    </ion-card-content>
+    <p class="btnPw" (click)="goToForgotPassword()">
+      ¿Olvidaste tu contraseña?
+    </p>
+  </ion-card>
+</ion-content>
