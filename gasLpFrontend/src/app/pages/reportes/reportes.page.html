@@ -1,0 +1,112 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Reportes</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="irDashboard()">
+        <ion-icon slot="start" name="people-outline"></ion-icon>
+        Dashboard
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <!-- FILTROS -->
+  <ion-segment [(ngModel)]="filtroEstado" (ionChange)="aplicarFiltros()">
+    <ion-segment-button value="">Todos</ion-segment-button>
+    <ion-segment-button *ngFor="let e of estados" [value]="e.documentId">
+      {{ e.tipo }}
+    </ion-segment-button>
+  </ion-segment>
+
+  <ion-item lines="none">
+    <ion-label position="floating">Fecha inicio</ion-label>
+    <ion-input
+      type="date"
+      [(ngModel)]="fechaInicio"
+      (ionChange)="aplicarFiltros()"
+    ></ion-input>
+    <ion-icon name="calendar-outline" slot="end"></ion-icon>
+  </ion-item>
+
+  <ion-item lines="none">
+    <ion-label position="floating">Fecha fin</ion-label>
+    <ion-input
+      type="date"
+      [(ngModel)]="fechaFin"
+      (ionChange)="aplicarFiltros()"
+    ></ion-input>
+    <ion-icon name="calendar-outline" slot="end"></ion-icon>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>Ruta</ion-label>
+    <ion-select [(ngModel)]="filtroRuta" (ionChange)="aplicarFiltros()">
+      <ion-select-option value="">Todas</ion-select-option>
+      <ion-select-option *ngFor="let r of rutas" [value]="r.documentId">
+        {{ r.nombre }}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>Tipo de servicio</ion-label>
+    <ion-select [(ngModel)]="filtroTipo" (ionChange)="aplicarFiltros()">
+      <ion-select-option value="">Todos</ion-select-option>
+      <ion-select-option *ngFor="let t of tiposServicio" [value]="t.documentId">
+        {{ t.nombre }}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>Orden</ion-label>
+    <ion-segment [(ngModel)]="ordenReciente" (ionChange)="aplicarFiltros()">
+      <ion-segment-button [value]="true">Recientes primero</ion-segment-button>
+      <ion-segment-button [value]="false">Antiguos primero</ion-segment-button>
+    </ion-segment>
+  </ion-item>
+
+  <!-- LISTA DE SERVICIOS -->
+  <ion-list>
+    <ion-card
+      *ngFor="let s of serviciosFiltrados"
+      [style.background]="getColorEstado(s)"
+      style="color: #000"
+    >
+      <ion-card-header>
+        <ion-card-title>
+          Estado: {{ s.estado_servicio?.tipo || 'N/A' | titlecase }}
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p><strong>Domicilio:</strong> {{ s.domicilio?.calle || 'N/A' }}</p>
+        <p><strong>Ruta:</strong> {{ s.ruta?.nombre || 'N/A' }}</p>
+        <p>
+          <strong>Tipo de servicio:</strong> {{ s.tipo_servicio?.nombre || 'N/A'
+          }}
+        </p>
+        <p><strong>Creado:</strong> {{ s.createdAt | date:'short' }}</p>
+        <p>
+          <strong>Programado:</strong> {{ s.fecha_programado | date:'short' }}
+        </p>
+        <p><strong>Surtido:</strong> {{ s.fecha_surtido | date:'short' }}</p>
+        <p>
+          <strong>cancelado:</strong> {{ s.fecha_cancelado | date:'short' }}
+        </p>
+        <p><strong>Nota:</strong> {{ s.nota }}</p>
+        <p><strong>Monto:</strong> {{ s.monto }}</p>
+        <p><strong>Observaciones:</strong> {{ s.observacion }}</p>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+
+  <!-- INFINITE SCROLL -->
+  <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMore($event)">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Cargando más servicios..."
+    >
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>

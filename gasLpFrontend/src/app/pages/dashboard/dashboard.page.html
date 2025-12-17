@@ -1,0 +1,156 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Dashboard</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="irClientes()">
+        <ion-icon slot="start" name="people-outline"></ion-icon>
+        Clientes
+      </ion-button>
+      <ion-button (click)="irReportes()">
+        <ion-icon slot="start" name="book-outline"></ion-icon>
+        Reportes
+      </ion-button>
+      <ion-button (click)="logOut()">
+        <ion-icon slot="start" name="enter-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <!-- FILTROS DE ESTADO -->
+  <ion-segment [(ngModel)]="filtroEstado" (ionChange)="aplicarFiltros()">
+    <ion-segment-button value=""> Todos </ion-segment-button>
+    <ion-segment-button *ngFor="let e of estados" [value]="e.documentId">
+      {{ e.tipo || e.nombre }}
+    </ion-segment-button>
+  </ion-segment>
+
+  <!-- FILTRO TIPO Y ORDEN -->
+  <ion-item>
+    <ion-label>Tipo de servicio</ion-label>
+    <ion-select [(ngModel)]="filtroTipo" (ionChange)="aplicarFiltros()">
+      <ion-select-option value="">Todos</ion-select-option>
+      <ion-select-option *ngFor="let t of tiposServicio" [value]="t.documentId">
+        {{ t.nombre }}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>Ruta</ion-label>
+    <ion-select [(ngModel)]="filtroRuta" (ionChange)="aplicarFiltros()">
+      <ion-select-option value="">Todos</ion-select-option>
+      <ion-select-option *ngFor="let r of rutas" [value]="r.documentId">
+        {{ r.nombre }}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>Orden</ion-label>
+    <ion-segment [(ngModel)]="ordenReciente" (ionChange)="aplicarFiltros()">
+      <ion-segment-button [value]="true">Recientes primero</ion-segment-button>
+      <ion-segment-button [value]="false">Antiguos primero</ion-segment-button>
+    </ion-segment>
+  </ion-item>
+
+  <!-- LISTA DE SERVICIOS -->
+  <ion-list>
+    <ion-card
+      *ngFor="let s of serviciosFiltrados"
+      [style.background]="getColorEstado(s)"
+      style="color: #000"
+    >
+      <ion-card-header>
+        <ion-card-title>
+          Estado: {{ s.estado_servicio?.tipo | titlecase }}
+        </ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <p><strong>Fecha creación:</strong> {{ s.createdAt | date:'short' }}</p>
+
+        <p *ngIf="s.fecha_programado">
+          <strong>Fecha programada:</strong> {{ s.fecha_programado |
+          date:'short' }}
+        </p>
+
+        <p *ngIf="s.fecha_surtido">
+          <strong>Fecha surtido:</strong> {{ s.fecha_surtido | date:'short' }}
+        </p>
+
+        <p *ngIf="s.fecha_cancelado">
+          <strong>Fecha cancelado:</strong> {{ s.fecha_cancelado | date:'short'
+          }}
+        </p>
+
+        <!-- Select para cambiar ruta -->
+        <ion-item>
+          <ion-label>Ruta</ion-label>
+          <ion-select
+            [value]="s.ruta?.documentId"
+            (ionChange)="cambiarRuta(s, $event.detail.value)"
+          >
+            <ion-select-option *ngFor="let r of rutas" [value]="r.documentId">
+              {{ r.nombre }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <div
+          style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap"
+        >
+          <!-- ASIGNAR -->
+          <ion-button
+            color="primary"
+            size="small"
+            (click)="cambiarEstado(s, getEstadoId('asignado'))"
+          >
+            <ion-icon name="checkmark-circle-outline"></ion-icon>
+            Asignar
+          </ion-button>
+
+          <!-- SURTIR -->
+          <ion-button
+            color="success"
+            size="small"
+            (click)="marcarComoSurtido(s)"
+          >
+            <ion-icon name="checkmark-circle-outline"></ion-icon>
+            Surtido
+          </ion-button>
+
+          <!-- CANCELAR -->
+          <ion-button
+            color="danger"
+            size="small"
+            (click)="marcarComoCancelado(s)"
+          >
+            <ion-icon name="close-circle-outline"></ion-icon>
+            Cancelar
+          </ion-button>
+
+          <!-- PROGRAMAR -->
+          <ion-button
+            color="warning"
+            size="small"
+            (click)="programarFechaHora(s)"
+          >
+            <ion-icon name="calendar-outline"></ion-icon>
+            Programar
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+
+  <!-- INFINITE SCROLL -->
+  <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMore($event)">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Cargando más servicios..."
+    >
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>

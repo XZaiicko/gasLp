@@ -1,0 +1,182 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Clientes</ion-title>
+
+    <!-- Botón en header para abrir formulario -->
+    <ion-buttons slot="end">
+      <ion-button (click)="irDashboard()">
+        <ion-icon slot="start" name="people-outline"></ion-icon>
+        Dashboard
+      </ion-button>
+      <ion-button (click)="abrirFormulario()">
+        <ion-icon name="person-add-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="clientes-background ion-padding">
+  <!-- Campo de búsqueda -->
+  <ion-item lines="full">
+    <ion-label position="floating">Buscar por teléfono</ion-label>
+    <ion-input
+      type="tel"
+      maxlength="10"
+      [(ngModel)]="telefonoBusqueda"
+      (ionInput)="onTelefonoInput()"
+    ></ion-input>
+
+    <!-- Botón buscar -->
+    <ion-button slot="end" (click)="buscarPorTelefono()">Buscar</ion-button>
+
+    <!-- Botón cancelar búsqueda (X) -->
+    <ion-icon
+      slot="end"
+      name="close-circle-outline"
+      size="large"
+      color="medium"
+      style="cursor: pointer"
+      (click)="cancelarBusqueda()"
+    ></ion-icon>
+  </ion-item>
+
+  <!-- Botón registrar si el teléfono tiene 10 dígitos y no existe -->
+  <ion-button
+    *ngIf="telefonoBusqueda.length === 10 && !telefonoExiste(telefonoBusqueda) && !editando"
+    expand="block"
+    class="clientes-btn"
+    (click)="abrirFormularioConTelefono()"
+  >
+    Registrar
+  </ion-button>
+
+  <!-- Formulario cliente y domicilio -->
+  <ion-card class="clientes-card" *ngIf="editando || mostrarFormulario">
+    <ion-card-header>
+      <ion-card-title
+        >{{ editando ? 'Editar Cliente' : 'Nuevo Cliente' }}</ion-card-title
+      >
+    </ion-card-header>
+
+    <ion-card-content>
+      <!-- Campos cliente -->
+      <ion-item lines="full">
+        <ion-label position="floating">Nombre</ion-label>
+        <ion-input [(ngModel)]="formCliente.nombre"></ion-input>
+      </ion-item>
+
+      <ion-item lines="full">
+        <ion-label position="floating">Apellido</ion-label>
+        <ion-input [(ngModel)]="formCliente.apellido"></ion-input>
+      </ion-item>
+
+      <ion-item lines="full">
+        <ion-label position="floating">Teléfono</ion-label>
+        <ion-input [(ngModel)]="formCliente.telefono"></ion-input>
+      </ion-item>
+
+      <!-- Select de domicilios solo si editando cliente -->
+      <ion-item *ngIf="editando">
+        <ion-label>Seleccionar domicilio</ion-label>
+        <ion-select
+          placeholder="Seleccionar"
+          [(ngModel)]="domicilioSeleccionado"
+          (ionChange)="seleccionarDomicilio($event)"
+          [compareWith]="compareDomicilios"
+        >
+          <ion-select-option *ngFor="let d of domicilios" [value]="d">
+            {{ d.attributes?.calle || d.calle }} {{ d.attributes?.numero ||
+            d.numero }}, {{ d.attributes?.colonia || d.colonia }}
+          </ion-select-option>
+
+          <ion-select-option value="nuevo">+ Nuevo domicilio</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- Campos domicilio -->
+      <ion-item lines="full">
+        <ion-label position="floating">Calle</ion-label>
+        <ion-input [(ngModel)]="formDomicilio.calle"></ion-input>
+      </ion-item>
+
+      <ion-item lines="full">
+        <ion-label position="floating">Número</ion-label>
+        <ion-input [(ngModel)]="formDomicilio.numero"></ion-input>
+      </ion-item>
+
+      <ion-item lines="full">
+        <ion-label position="floating">Colonia</ion-label>
+        <ion-input [(ngModel)]="formDomicilio.colonia"></ion-input>
+      </ion-item>
+
+      <ion-item lines="full">
+        <ion-label position="floating">Código Postal</ion-label>
+        <ion-input [(ngModel)]="formDomicilio.cp"></ion-input>
+      </ion-item>
+
+      <ion-item lines="full">
+        <ion-label position="floating">Referencia</ion-label>
+        <ion-input [(ngModel)]="formDomicilio.referencia"></ion-input>
+      </ion-item>
+
+      <!-- Botón único para cliente y domicilio -->
+      <ion-button
+        expand="block"
+        class="clientes-btn"
+        (click)="editando ? guardarEdicion() : crearCliente()"
+      >
+        {{ editando ? 'Guardar' : 'Crear' }}
+      </ion-button>
+
+      <!-- Botón eliminar domicilio -->
+      <ion-button
+        *ngIf="domicilioSeleccionado"
+        expand="block"
+        class="eliminar-domicilio-btn"
+        (click)="eliminarDomicilio()"
+      >
+        Eliminar domicilio seleccionado
+      </ion-button>
+
+      <!-- Botón cancelar edición cliente -->
+      <ion-button
+        *ngIf="editando"
+        expand="block"
+        class="clientes-cancel-btn"
+        (click)="cancelarEdicion()"
+      >
+        Cancelar
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Lista de clientes -->
+  <ion-list *ngIf="clientes.length > 0" class="clientes-list">
+    <ion-item *ngFor="let c of clientes" class="cliente-item">
+      <ion-label>
+        <h2>
+          {{ c.attributes?.nombre || c.nombre }} {{ c.attributes?.apellido ||
+          c.apellido }}
+        </h2>
+        <p>{{ c.attributes?.telefono || c.telefono }}</p>
+      </ion-label>
+      <ion-icon
+        name="add-circle-outline"
+        color="success"
+        style="cursor: pointer; font-size: 28px; margin-left: 10px"
+        (click)="asignarServicio(c)"
+      >
+      </ion-icon>
+      <ion-button fill="solid" class="edit-btn" (click)="editar(c)"
+        >Editar</ion-button
+      >
+      <ion-button fill="solid" class="delete-btn" (click)="eliminar(c)"
+        >Eliminar</ion-button
+      >
+    </ion-item>
+  </ion-list>
+
+  <p *ngIf="clientes.length === 0" class="ion-text-center no-clientes">
+    No hay clientes registrados
+  </p>
+</ion-content>

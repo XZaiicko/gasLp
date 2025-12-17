@@ -1,0 +1,58 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Asignar Servicio</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="asignar-background">
+  <ion-card class="asignar-card">
+    <ion-item class="asignar-item">
+      <ion-label>Domicilio</ion-label>
+      <ion-select [(ngModel)]="formServicio.domicilio">
+        <ion-select-option
+          *ngFor="let d of domicilios"
+          [value]="d.documentId || d.id"
+        >
+          {{ d.attributes?.calle || d.calle }} {{ d.attributes?.numero ||
+          d.numero }}, {{ d.attributes?.colonia || d.colonia }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <!-- Tipo de servicio -->
+    <ion-item class="asignar-item">
+      <ion-label>Tipo de servicio</ion-label>
+      <ion-select [(ngModel)]="formServicio.tipo_servicio">
+        <ion-select-option
+          *ngFor="let tipo of tiposServicios"
+          [value]="tipo.documentId"
+        >
+          {{ tipo.nombre }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <!-- <ion-item class="asignar-item">
+      <ion-label position="floating">Observaciones</ion-label>
+      <ion-textarea [(ngModel)]="formServicio.observacion"></ion-textarea>
+    </ion-item> -->
+
+    <ion-item class="asignar-item">
+      <ion-label position="floating">Nota</ion-label>
+      <ion-textarea [(ngModel)]="formServicio.nota"></ion-textarea>
+    </ion-item>
+
+    <ion-item class="asignar-item">
+      <ion-label>Ruta</ion-label>
+      <ion-select [(ngModel)]="formServicio.ruta">
+        <ion-select-option *ngFor="let r of rutas" [value]="r.documentId">
+          {{ r.nombre }} - {{ r.personal?.nombre || 'Sin operador' }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-button expand="block" class="asignar-btn" (click)="guardarServicio()">
+      Asignar servicio
+    </ion-button>
+  </ion-card>
+</ion-content>

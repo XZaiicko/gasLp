@@ -1,0 +1,228 @@
+/* ==========================
+   Global Styles - Responsive
+=========================== */
+
+/* Variables generales */
+:root {
+  --card-gap: 15px;
+  --card-padding: 10px;
+}
+
+/* ==========================
+   Dashboard Cards
+=========================== */
+ion-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--card-gap);
+  padding: 0;
+}
+
+ion-card {
+  flex: 1 1 calc(100% - var(--card-gap));
+  min-width: 280px;
+  max-width: 32%;
+  box-sizing: border-box;
+  margin: 0;
+  color: #000;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform 0.2s;
+}
+
+ion-card:hover {
+  transform: scale(1.02);
+}
+
+/* Ajuste por media query */
+@media (max-width: 1024px) {
+  ion-card {
+    max-width: 48%; /* 2 cards por renglon */
+  }
+}
+
+@media (max-width: 600px) {
+  ion-card {
+    max-width: 100%; /* 1 card por renglon */
+  }
+}
+
+/* ==========================
+   Botones dentro de cards
+=========================== */
+ion-card-content ion-button {
+  flex: 1 1 auto;
+  margin-bottom: 5px;
+  min-width: 90px;
+  white-space: nowrap;
+}
+
+/* ==========================
+   Asignar Servicio Form
+=========================== */
+.asignar-background {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+}
+
+.asignar-card {
+  width: 100%;
+  max-width: 500px;
+  margin: auto;
+  padding: 15px;
+  box-sizing: border-box;
+}
+
+.asignar-item {
+  margin-bottom: 10px;
+}
+
+.asignar-btn {
+  margin-top: 15px;
+}
+
+/* ==========================
+   Clientes
+=========================== */
+.clientes-background {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.clientes-card {
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+}
+
+.clientes-list ion-item {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.edit-btn,
+.delete-btn {
+  margin-left: 5px;
+  min-width: 70px;
+}
+
+/* ==========================
+   Login
+=========================== */
+.login-background {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+  height: 100%;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 15px;
+  box-sizing: border-box;
+}
+
+.login-btn,
+.google-btn {
+  margin-top: 10px;
+}
+
+/* ==========================
+   Inputs y selects responsive
+=========================== */
+ion-input,
+ion-textarea,
+ion-select {
+  width: 100%;
+}
+
+/* ==========================
+   Titulos y textos
+=========================== */
+ion-card-title {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+ion-list-header ion-label {
+  font-weight: bold;
+}
+
+/* ==========================
+   Iconos
+=========================== */
+ion-icon {
+  font-size: 20px;
+}
+
+/* ==========================
+   Ajustes generales
+=========================== */
+ion-content {
+  --padding-start: 15px;
+  --padding-end: 15px;
+  --padding-top: 10px;
+  --padding-bottom: 10px;
+}
+
+@media (max-width: 400px) {
+  ion-card-content ion-button {
+    font-size: 0.8em;
+    padding: 5px 8px;
+  }
+}
+
+/* ==========================
+   Dashboard - Filtros Responsive
+=========================== */
+ion-segment {
+  display: flex;
+  flex-wrap: wrap; /* permite que los segment buttons bajen de línea si no caben */
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+ion-segment-button {
+  flex: 1 1 auto; /* los botones ocupan espacio proporcional */
+  min-width: 90px;
+  font-size: 0.9em;
+  text-align: center;
+  padding: 5px 10px;
+}
+
+ion-button[expand="block"] {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+/* Media query para tablets y móviles */
+@media (max-width: 768px) {
+  ion-segment-button {
+    font-size: 0.85em;
+    padding: 5px 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  ion-segment-button {
+    font-size: 0.8em;
+    padding: 4px 6px;
+  }
+}
+
+/* Títulos del header centrados horizontal y verticalmente */
+ion-header ion-toolbar ion-title {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  width: auto;
+  white-space: nowrap; /* evita que se rompa el título */
+}
